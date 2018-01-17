@@ -1,0 +1,10 @@
+{
+    "name": "airfinder",
+    "version": "0.0.0",
+    "private": true,
+    "scripts": {
+      "init all": "cd airapp/ && npm i && cd ../airserver/ && npm i",
+      "server": "DEBUG=express:* nodemon ./bin/www"
+    }
+  }
+  
