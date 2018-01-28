@@ -8,7 +8,9 @@
   },
   "dependencies": {
     "react": "16.2.0",
-    "react-native": "0.52.0"
+    "react-native": "0.51.0",
+    "react-native-keyboard-aware-scroll-view": "^0.4.3",
+    "react-native-navigation": "^1.1.350"
   },
   "devDependencies": {
     "babel-jest": "22.0.4",
