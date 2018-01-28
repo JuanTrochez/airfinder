@@ -1,4 +1,10 @@
-import { AppRegistry } from 'react-native';
-import App from './App';
+import { Navigation } from 'react-native-navigation';
+import { registerScreens } from './src/screens';
 
-AppRegistry.registerComponent('airapp', () => App);
+registerScreens(); // this is where you register all of your app's screens
+
+Navigation.startSingleScreenApp({
+  screen: {
+    screen: 'screens.Connection', // unique ID registered with Navigation.registerScreen
+  }
+});
