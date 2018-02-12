@@ -1,18 +1,42 @@
-var User = require('../models/user');
-var UserService = require('../services/user');
+let User = require('../models/user');
+let UserService = require('../services/user');
+
+const ERROR_DEFAULT_MESSAGE = 'Une erreur est survenue lors de la requête';
 
 //user index page
 exports.index = function(req, res) {
-	res.send('NOT IMPLEMENTED: Users Home Page');
+	let response = {
+		valid: false,
+		message: ERROR_DEFAULT_MESSAGE
+	};
+	UserService.findAll()
+		.then((data) => {
+			console.log('users finally founded');
+			response.valid = data.length > 0;
+			response.message = response.valid ? 'Des utilisateurs ont bien été trouvé' : 'Aucun utilisateur trouvé';
+			response.data = data;
+			res.json(response);
+		}).catch((message) => {
+			console.error(message);
+		});
 };
 
 // Display list of all users.
 exports.user_list = function(req, res) {
-	let data = UserService.findAll();
-	if (data.valid) {
-		return data;
-	}
-	res.send('NOT IMPLEMENTED: user list');
+	let response = {
+		valid: false,
+		message: ERROR_DEFAULT_MESSAGE
+	};
+	UserService.findAll()
+		.then((data) => {
+			console.log('users finally founded');
+			reponse.valid = data.length > 0;
+			response.message = response.valid ? 'Des utilisateurs ont bien été trouvé' : 'Aucun utilisateur trouvé';
+			response.data = data;
+			res.json(response);
+		}).catch((message) => {
+			console.error(message);
+		});
 };
 
 // Display detail page for a specific user.
@@ -20,29 +44,25 @@ exports.user_detail = function(req, res) {
 	res.send('NOT IMPLEMENTED: user detail: ' + req.params.id);
 };
 
-// Display user create form on GET.
-exports.user_create_get = function(req, res) {
-	res.send('NOT IMPLEMENTED: user create GET');
-};
-
 // Handle user create on POST.
 exports.user_create_post = function(req, res) {
-	res.send('NOT IMPLEMENTED: user create POST');
-};
-
-// Display user delete form on GET.
-exports.user_delete_get = function(req, res) {
-	res.send('NOT IMPLEMENTED: user delete GET');
+	let response = {
+		valid: false,
+		message: ERROR_DEFAULT_MESSAGE
+	};
+	UserService.create(req.body).then((data) => {
+		console.log('user created ', data);
+		response.valid = data;
+		response.message = 'L\'utilisateur a bien été créé';
+		res.json(response);
+	}).catch((message) => {
+		console.error(message);
+	});
 };
 
 // Handle user delete on POST.
 exports.user_delete_post = function(req, res) {
 	res.send('NOT IMPLEMENTED: user delete POST');
-};
-
-// Display user update form on GET.
-exports.user_update_get = function(req, res) {
-	res.send('NOT IMPLEMENTED: user update GET');
 };
 
 // Handle user update on POST.

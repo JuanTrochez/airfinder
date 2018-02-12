@@ -7,8 +7,7 @@ router.get('/', function(req, res, next) {
   userController.index(req, res);
 });
 
-
-//Get single user by it's id
+//Get single user by its id
 router.get('/:id', function(req, res, next) {
 	userController.user_detail(req, res);
 });
