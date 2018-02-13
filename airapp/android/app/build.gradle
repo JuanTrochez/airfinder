@@ -97,6 +97,7 @@ android {
     compileSdkVersion 26
     buildToolsVersion "26.0.1"
 
+
     defaultConfig {
         applicationId "com.airapp"
         minSdkVersion 16
