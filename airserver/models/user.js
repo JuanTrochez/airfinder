@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose";
+let uniqueValidator = require('mongoose-unique-validator');
 
 var userSchema = new Schema({
 	name: {
@@ -9,20 +10,13 @@ var userSchema = new Schema({
 		type: String,
 		required: [true, 'Le prénom est obligatoire'],
 	},
-	username: {
-		type: String,
-		unique: true,
-		validate: {
-			validator: function(v) {
-				return /[a-z0-9]/i.test(v);
-			},
-			message: 'Le pseudo ne doit comporter que des caractères alphanumeriques'
-		},
-		required: [true, 'Le pseudo est obligatoire']
-	},
 	password: {
 		type: String,
 		required: [true, 'Le mot de passe est obligatoire'],
+	},
+	isFacebook: {
+		type: Boolean,
+		default: false,
 	},
 	email: {
 		type: String,
@@ -31,9 +25,14 @@ var userSchema = new Schema({
 			validator: function(v) {
 				let re = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 				return re.test(v);
-			}
+			},
+			message: 'L\'email n\'est pas valide',
 		},
 		required: [true, 'L\'email est obligatoire'],
+	},
+	isOnline: {
+		type: Boolean,
+		default: true,
 	},
 	createdAt: { type: Date, default: Date.now },
 	updatedAt: { type: Date, default: Date.now },
@@ -41,5 +40,6 @@ var userSchema = new Schema({
 	position: [{ type: Schema.Types.ObjectId, ref: "Position" }]
 });
 
+userSchema.plugin(uniqueValidator, { message: 'La valeur est déjà utilisée' });
 
 module.exports = mongoose.model("User", userSchema);

@@ -16,4 +16,8 @@ router.post('/create', function(req, res, next) {
 	userController.user_create_post(req, res);
 });
 
+router.post('/login', function(req, res, next) {
+	userController.user_login_post(req, res);
+});
+
 module.exports = router;
