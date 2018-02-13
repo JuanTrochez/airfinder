@@ -16,24 +16,31 @@ import {
   TouchableOpacity
 } from 'react-native';
 
+import { Navigation } from 'react-native-navigation';
 import SignInForm from './SignInForm';
 
 const WIDTH_SCREEN = Dimensions.get('window').width;
 const HEIGHT_SCREEN = Dimensions.get('window').height;
 
-// const FBSDK = require('react-native-fbsdk');
-// const {
-//   LoginManager,
-//   AccessToken,
-//   GraphRequest,
-//   GraphRequestManager,
-// } = FBSDK;
+const FBSDK = require('react-native-fbsdk');
+const {
+  LoginManager,
+  AccessToken,
+  GraphRequest,
+  GraphRequestManager,
+} = FBSDK;
 
 export default class Connection extends Component<{}> {
 
   constructor(props) {
     super(props);
-
+    this.state = {
+      userFirstName : "",
+      userName : "",
+      userEmail : this.props.userEmail,
+      userPassword : this.props.userPassword,
+      isFacebook : false,
+    };
     //Hide the top navbar
     this.props.navigator.toggleNavBar({
       to: 'hidden', // required, 'hidden' = hide navigation bar, 'shown' = show navigation bar
@@ -42,16 +49,24 @@ export default class Connection extends Component<{}> {
     this.keyboardHeight = new Animated.Value(0);
   }
 
+  static navigatorStyle = {
+    drawUnderTabBar: true,
+    navBarButtonColor: '#ffffff',
+    navBarTextColor: '#ffffff',
+    collapsingToolBarCollapsedColor: '#0f2362',
+    navBarBackgroundColor: '#eeeeee'
+  };
+
   componentWillMount() {
     this.keyboardDidShowSub = Keyboard.addListener('keyboardDidShow', this.keyboardDidShow);
     this.keyboardDidHideSub = Keyboard.addListener('keyboardDidHide', this.keyboardDidHide);
-    // LoginManager.logOut();
-    // AccessToken.getCurrentAccessToken().then(
-    //   (data) => {
-    //     if(data)
-    //       this.getUserFBData();
-    //   }
-    // );
+    LoginManager.logOut();
+    AccessToken.getCurrentAccessToken().then(
+      (data) => {
+        if(data)
+          this.getUserFBData();
+      }
+    );
   }
 
   componentWillUnmount() {
@@ -79,36 +94,125 @@ export default class Connection extends Component<{}> {
 
   //Handle the facebook connection here
   handleFacebookLogin(){
-    // LoginManager.logInWithReadPermissions(['public_profile', 'email']).then(
-    //   (result) => {
-    //     if(result.isCancelled){
-    //       alert('Connexion Facebook annulée');
-    //     } else {
-    //       this.getUserFBData();
-    //     }
-    //   },
-    //   function(error) {
-    //     alert('Erreur de la connexion Facebook: '+ error);
-    //   }
-    // );
+    LoginManager.logInWithReadPermissions(['public_profile', 'email']).then(
+      (result) => {
+        if(result.isCancelled){
+        } else {
+          this.getUserFBData();
+        }
+      },
+      function(error) {
+        alert('Erreur de la connexion Facebook: '+ error);
+      }
+    );
   };
 
+  sendFBCreatePerson() {
+    fetch('http://172.16.14.105:3000/users/create', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: this.state.userName,
+        firstname: this.state.userFirstName,
+        email: this.state.userEmail,
+        isFacebook: this.state.isFacebook
+      }),
+    })
+    .then((response) => response.json())
+    .then((responseJson) => {
+      if(responseJson.valid){
+        this.redirectionHome(responseJson.data);
+      } else {
+        switch(responseJson.code) {
+          case "DISPLAY_ERRORS":
+            let messageError = "";
+            responseJson.errors.forEach((element) => {
+              messageError += element.field + ":" + element.message + "\t";
+            });
+            alert(messageError);
+            break;
+          default:
+            alert("Une erreur est survenue");
+        }
+      }
+    })
+    .catch((error) => {
+      console.log("Error for the createUserProfil request "+ error);
+    });
+  }
+
+  sendFBConnection() {
+    fetch('http://172.16.14.105:3000/users/login', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: this.state.userName,
+        firstname: this.state.userFirstName,
+        email: this.state.userEmail,
+        isFacebook: this.state.isFacebook
+      }),
+    })
+    .then((response) => response.json())
+    .then((responseJson) => {
+      if(responseJson.valid){
+        this.redirectionHome(responseJson.data);
+      } else {
+        switch(responseJson.code) {
+          case "CREATE_FB_ACCOUNT":
+            this.sendFBCreatePerson();
+            break;
+          case "DISPLAY_MESSAGE":
+            alert(responseJson.message);
+            break;
+          case "DISPLAY_ERRORS":
+            let messageError = "";
+            responseJson.errors.forEach((element) => {
+              messageError += element.field + ":" + element.message + "\t";
+            });
+            alert(messageError);
+            break;
+          default:
+            alert("Une erreur est survenue");
+        }
+      }
+    })
+    .catch((error) => {
+      console.log("Error for the createUserProfil request "+ error);
+    });
+  }
+
   getUserFBData() {
-    // let infoRequest = new GraphRequest(
-    //   '/me?fields=last_name,first_name,email',
-    //   null,
-    //   this.responseInfoCallback
-    // );
-    // new GraphRequestManager().addRequest(infoRequest).start();
+    let infoRequest = new GraphRequest(
+      '/me?fields=last_name,first_name,email',
+      null,
+      this.responseInfoCallback
+    );
+    new GraphRequestManager().addRequest(infoRequest).start();
   }
 
   responseInfoCallback = (error, result) => {
-    // if(error) {
-    //   alert('Erreur lors de la reception des informations facebook: '+ error);
-    // } else {
-    //   alert('Reception des informations utilisateur, prenom: '+ result.first_name + ' nom: '+ result.last_name + ' email: ' + result.email)
-    //   //this.setState({});
-    // }
+    if(error) {
+      console.log('Erreur lors de la reception des informations facebook: '+ error);
+    } else {
+      this.setState({userName: result.last_name, userFirstName: result.first_name, userEmail: result.email, isFacebook: true});
+      this.sendFBConnection();
+    }
+  }
+
+  redirectionHome(userData){
+    Navigation.startSingleScreenApp({
+      screen: {
+        screen: 'screens.Home',
+        title: 'Accueil',
+        passProps: {objUser : userData},
+      }
+    });
   }
 
   render() {
@@ -130,7 +234,7 @@ export default class Connection extends Component<{}> {
         </View>
         <View style={[styles.line]}/>
         <View style={styles.form}>
-          <SignInForm navigatorParent={this.props.navigator}/>
+          <SignInForm navigatorParent={this.props.navigator} Parent={this}/>
         </View>
       </Animated.View>
     );

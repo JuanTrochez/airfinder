@@ -10,42 +10,56 @@ export default class SignInForm extends Component<{}> {
     this.state = {
       userEmail: "",
       userPassword: "",
+      isFacebook: false,
     }
   }
 
   checkForEmptyField(){
     if(this.state.userEmail == "" || this.state.userPassword == ""){
-      this.registrationView();
+      alert("Remplir les champs email et connexion");
     } else {
       this.isUserAlreadyRegistred();
     }
   }
 
   isUserAlreadyRegistred(){
-    // fetch('http://localhost:4443/persons/connect/'+this.state.userEmail+'/'+this.state.userPassword)
-    // .then((response) => response.json())
-    // .then((responseJson) => {
-    //   if(responseJson.connexion === undefined){
-    //     //L'utilisateur est enregistre
-    //     this.homeView(responseJson);
-    //   } else if(responseJson.connexion == false && responseJson.info != undefined){
-    //     //L'utilisateur n'existe pas, on le redirige vers l'ecran d'enregistrement
-    //     alert(responseJson.info);
-    //   } else {
-    //     this.registrationView();
-    //   }
-    // })
-    // .catch((error) => {
-    //   console.log("Error for the UserAlreadyRegistred request " + error);
-    // });
-  }
-
-  homeView(userData){
-    // this.props.navigatorParent.showModal({
-    //   screen: 'DIFM_App.Accueil',
-    //   title: 'Accueil',
-    //   passProps: {objUser : userData},
-    // });
+    fetch('http://172.16.14.105:3000/users/login', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: this.state.userEmail,
+        password: this.state.userPassword,
+        isFacebook: this.state.isFacebook
+      }),
+    })
+    .then((response) => response.json())
+    .then((responseJson) => {
+      //valid //data //message //errors
+      if(responseJson.valid){
+        this.props.Parent.redirectionHome(responseJson.data);
+      } else {
+        switch(responseJson.code) {
+          case "DISPLAY_MESSAGE":
+            alert(responseJson.message);
+            break;
+          case "DISPLAY_ERRORS":
+            let messageError = "";
+            responseJson.errors.forEach((element) => {
+              messageError += element.field + ":" + element.message + "\t";
+            });
+            alert(messageError);
+            break;
+          default:
+            alert("Une erreur est survenue");
+        }
+      }
+    })
+    .catch((error) => {
+      console.log("Error for the createUserProfil request "+ error);
+    });
   }
 
   registrationView(){
@@ -53,7 +67,7 @@ export default class SignInForm extends Component<{}> {
       screen: 'screens.Registration',
       title: "Inscription",
       backButtonTitle: 'Retour',
-      passProps: {userEmail : this.state.userEmail, userPassword : this.state.userPassword},
+      passProps: {userEmail : this.state.userEmail, userPassword : this.state.userPassword, connection : this.props.Parent},
     });
   }
 
@@ -89,12 +103,16 @@ export default class SignInForm extends Component<{}> {
             style={styles.input}
             ref={(input) => this.passwordInput = input}
           />
-          <Text style={styles.mdpForgotten} onPress = {()=> console.log("mot de passe oublieeee")}> Mot de passe oublié? </Text>
         </View>
         <View style={styles.buttonHolder}>
           <TouchableOpacity style={styles.buttonContainer} onPress= {this.checkForEmptyField.bind(this)}>
-            <Text style={styles.buttonText}> Inscription / Connexion </Text>
+            <Text style={styles.buttonText}> Connexion </Text>
           </TouchableOpacity>
+        </View>
+        <View style={styles.containerHorizontal}>
+          <Text style={[styles.boxRegistration,styles.registerText]} onPress={this.registrationView.bind(this)}> Inscription </Text>
+          <Text style={[styles.boxPipe,styles.registerText]}> | </Text>
+          <Text style={[styles.boxPass,styles.mdpForgotten]} onPress = {()=> alert("Mot de passe oublié ? Pas de chance :)")}> Mot de passe oublié ? </Text>
         </View>
       </View>
     );
@@ -106,7 +124,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'flex-end',
-    marginBottom: '3%',
   },
   input: {
     height : '30%',
@@ -119,7 +136,7 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
   inputContainer: {
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
   },
   buttonContainer: {
     paddingVertical: '3%',
@@ -132,9 +149,26 @@ const styles = StyleSheet.create({
   buttonHolder: {
     backgroundColor : '#72A6FF',
   },
+  containerHorizontal: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
+  boxRegistration: {
+    flex: 1,
+  },
+  boxPipe: {
+    flex: 0.25,
+  },
+  boxPass: {
+    flex: 1,
+  },
+  registerText: {
+    fontSize: 15,
+    textAlign: 'center',
+  },
   mdpForgotten : {
-    fontSize: 10,
-    marginBottom: '5%',
-    textAlign: 'center'
+    fontSize: 15,
+    textAlign: 'center',
   }
 });

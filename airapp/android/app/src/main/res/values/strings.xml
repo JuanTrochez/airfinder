@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">airapp</string>
+    <string name="facebook_app_id">219459465280345</string>
+    <string name="fb_login_protocol_scheme">fb219459465280345</string>
 </resources>
