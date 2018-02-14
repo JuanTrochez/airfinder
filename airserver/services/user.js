@@ -1,67 +1,50 @@
 import { Promise } from 'mongoose';
-import ErrorHelper from '../helpers/ErrorsHelper';
 
 var User = require('../models/user');
 
-//get all users
+/**
+ * GETTERS
+ */
+
+//find all users
 exports.findAll = function () {
-	console.log('finding users...');
-	return new Promise((success, error) => {
-		User.find(function(err, users) {
-			console.log("data user find all", err, users);
-			if (err) {
-				let errors = ErrorHelper.getErrorsFromObject(err.errors);
-				error(errors);
-			}
-			success(users);
-		});
-	});
+	console.log('finding all users...');
+	let query = User.find();
+	return query.exec();
 };
 
-//get user by id
+//find user by id
 exports.findById = function(id) {
 	console.log('find user by id... ', id);
-	return new Promise((success, error) => {
-		User.findById(id).exec(function(err, user) {
-			console.log('find user by id', err, user);
-			if (err) {
-				let errors = ErrorHelper.getErrorsFromObject(err.errors);
-				error(errors);
-			}
-			success(user);
-		});
-	});
+	let query = User.findById(id);
+	return query.exec();
 };
+
+//find multiple user by criterias
+exports.findByCriterias = function(criterias) {
+	console.log('finding user by criterias...');
+	// console.log(criterias);
+	let query = User.find(criterias);
+	return query.exec();
+}
+
+//find single user by criterias
+exports.findOneByCriterias = function(criterias) {
+	console.log('finding single user by criterias...');
+	// console.log(criterias);
+	let query = User.findOne(criterias);
+	return query.exec();
+}
+
+
+/**
+ * WRITERS
+ */
 
 //create new user
 exports.create = function(newUser) {
 	console.log('creating user...');
 	// console.log(newUser);
 	let userModel = new User(newUser);
-	return new Promise((success, error) =>  {
-		userModel.save(function(err) {
-			if (err) {
-				// console.log(err);
-				let errors = ErrorHelper.getErrorsFromObject(err.errors);
-				error(errors);
-			}
-			newUser._id = userModel._id;
-			success(newUser);
-		});
-	});
+	return userModel.save();
 };
-
-exports.findByCriterias = function(criteras) {
-	console.log('finding user by criterias...');
-	// console.log(criterias);
-	return new Promise((success, error) => {
-		User.find(criteras, function(err, user) {
-			// console.log('data user find criterias', err, user);
-			if (err) {
-				let errors = ErrorHelper.getErrorsFromObject(err.errors);
-				error(errors);
-			}
-			success(user);
-		});
-	});
-}

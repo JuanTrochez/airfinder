@@ -1,9 +1,10 @@
 
 //user socket events
-exports = module.exports = function(io) {
+module.exports = function(io) {
+  console.log('init user events...');
   // Set socket.io listeners.
   io.on('connection', (socket) => {
-    //console.log('a user connected');
+    console.log('a user connected');
 
     // On conversation entry, join broadcast channel
     socket.on('enter conversation', (conversation) => {

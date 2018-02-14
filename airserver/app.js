@@ -5,11 +5,16 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
+var socket_io = require( "socket.io" );
 
 var index = require('./routes/index');
 var users = require('./routes/users');
+var userEvents = require('./events/userEvents');
 
 var app = express();
+var io = socket_io();
+app.io = io;
+userEvents(io);
 
 
 //db connection
