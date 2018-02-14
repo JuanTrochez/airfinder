@@ -11,6 +11,7 @@ import {
   ScrollView
 } from 'react-native';
 
+import { Navigation } from 'react-native-navigation';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const HEIGHT_SCREEN = Dimensions.get('window').height;
@@ -112,7 +113,7 @@ export default class Registration extends Component<{}> {
     .then((response) => response.json())
     .then((responseJson) => {
       if(responseJson.valid){
-        thisprops.connection.redirectionHome(responseJson.data);
+        this.redirectionHome(responseJson.data);
       } else {
         switch(responseJson.code) {
           case "DISPLAY_ERRORS":
@@ -150,6 +151,16 @@ export default class Registration extends Component<{}> {
     let regexMail =  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     if(regexMail.test(this.state.userEmail)){ return true;}
     else { alert('Email non valid'); return false;}
+  }
+
+  redirectionHome(userData){
+    Navigation.startSingleScreenApp({
+      screen: {
+        screen: 'screens.Home',
+        title: 'Accueil',
+        passProps: {objUser : userData},
+      }
+    });
   }
 
   render() {

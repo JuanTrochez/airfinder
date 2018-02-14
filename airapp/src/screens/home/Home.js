@@ -13,7 +13,11 @@ const HEIGHT_SCREEN = Dimensions.get('window').height;
 
 export default class Home extends Component<{}> {
 
-  
+  static navigatorStyle = {
+    drawUnderTabBar: true,
+    navBarComponentAlignment: 'center',
+    navBarBackgroundColor: '#C0BAEF'
+  };
 
   render() {
     return (

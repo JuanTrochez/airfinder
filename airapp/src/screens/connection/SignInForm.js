@@ -18,7 +18,8 @@ export default class SignInForm extends Component<{}> {
     if(this.state.userEmail == "" || this.state.userPassword == ""){
       alert("Remplir les champs email et connexion");
     } else {
-      this.isUserAlreadyRegistred();
+      //this.isUserAlreadyRegistred();
+      this.props.Parent.redirectionHome({});
     }
   }
 
@@ -67,7 +68,7 @@ export default class SignInForm extends Component<{}> {
       screen: 'screens.Registration',
       title: "Inscription",
       backButtonTitle: 'Retour',
-      passProps: {userEmail : this.state.userEmail, userPassword : this.state.userPassword, connection : this.props.Parent},
+      passProps: {userEmail : this.state.userEmail, userPassword : this.state.userPassword},
     });
   }
 
