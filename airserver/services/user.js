@@ -1,5 +1,3 @@
-import { Promise } from 'mongoose';
-
 var User = require('../models/user');
 
 /**
