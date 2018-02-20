@@ -136,3 +136,37 @@ exports.user_delete_post = function(req, res) {
 exports.user_update_post = function(req, res) {
 	res.send('NOT IMPLEMENTED: user update POST');
 };
+
+
+//Handle user request for contacting another
+exports.user_contact_get = function(req, res) {
+	res.send('NOT IMPLEMENTED: user contact get');
+};
+
+
+exports.user_search = function(req, res) {
+	let response = defaultResponse;
+	let searchString = new RegExp(req.body.search, 'i');
+	let criterias = { $or:[{'email': searchString}, {'name':searchString}, {'firstname':searchString} ]};
+	UserService.findByCriterias(criterias)
+	.then((datas) => {
+		console.log('search request datas', datas);
+		if (datas.length >0) {
+			console.log('found users');
+			response.valid = true;
+			response.message = 'found users';
+		} else {
+			response.valid = false;
+			response.message = 'Aucun utilisateur trouvé';
+			response.code = ErrorsMessage.codes.default;
+		}
+		response.data = datas;
+		res.json(response);
+	})
+	.catch((errors) => {
+		// console.log(errors);
+		response.errors = ErrorHelper.getErrorsFromObject(data.errors);
+		response.code = ERROR_CODES.errors;
+		res.json(response);
+	});
+}

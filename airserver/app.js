@@ -7,9 +7,16 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var socket_io = require( "socket.io" );
 
+//routes
 var index = require('./routes/index');
 var users = require('./routes/users');
+var users = require('./routes/users');
+var historyStatus = require('./routes/historyStatus');
+
+//events
 var userEvents = require('./events/userEvents');
+
+var dbConfig = require('./config/db');
 
 var app = express();
 var io = socket_io();
@@ -18,7 +25,7 @@ userEvents(io);
 
 
 //db connection
-mongoose.connect('mongodb://localhost/airfinder');
+mongoose.connect(dbConfig.connectLink);
 let db = mongoose.connection;
 db.on('error', console.error.bind(console, 'db connection error:'));
 db.once('open', function() {
@@ -39,6 +46,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
 app.use('/users', users);
+app.use('/history-status', historyStatus);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
