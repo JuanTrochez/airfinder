@@ -1,4 +1,4 @@
-let protocol = 'http';
+let protocol = 'https';
 // let host = 'localhost';
 let host = 'aeb54bb9.ngrok.io';
 let port = 3000;

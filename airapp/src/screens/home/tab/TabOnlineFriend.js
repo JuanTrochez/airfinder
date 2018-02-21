@@ -34,7 +34,6 @@ export default class TabOnlineFriend extends Component<{}> {
     this.busy = false;
     this.listUserConnect = [];
     this.socket = new Socket(this);
-    this.socket.sendMessage('get id',{userId: this.state.userId});
   }
 
   static navigatorStyle = {
@@ -87,6 +86,7 @@ export default class TabOnlineFriend extends Component<{}> {
         username: dataNewUser.name,
         userId: dataNewUser._id,
         userfirstname: dataNewUser.firstname,
+        useremail: dataNewUser.email,
       });
     }else if(action == "remove"){
       this.listUserConnect = this.listUserConnect.filter(obj => obj.userId !== dataNewUser.userId);
@@ -146,11 +146,11 @@ export default class TabOnlineFriend extends Component<{}> {
         // code
         this.setState({userRole: "appele"});
         this.setState({userRoomId: data.callerRoomId});
-        this.socket.sendMessage('message',{
+        this.socket.sendMessage('call accepted',{
           type: "call_accepted",
           callername: data.callername,
           callerId: data.callerId,
-          from: username
+          from: this.state.username
         });
         this._redirectionCall();
       }else{
@@ -159,7 +159,7 @@ export default class TabOnlineFriend extends Component<{}> {
           type: "call_rejected",
           callername: data.callername,
           callerId: data.callerId,
-          from: username
+          from: this.state.username
         });
         this.busy = false;
         incallwith = "";
@@ -169,7 +169,7 @@ export default class TabOnlineFriend extends Component<{}> {
         type: "call_busy",
         callername: data.callername,
         callerId: data.callerId,
-        from: username
+        from: this.state.username
       });
     }
   }
@@ -210,7 +210,7 @@ export default class TabOnlineFriend extends Component<{}> {
                 {`${rowData.username}`}
               </Text>
               <Text style={styles.textStatus}>
-                En ligne
+                {`${rowData.useremail}`}
               </Text>
             </View>
             <TouchableHighlight underlayColor='rgba(255, 255, 255, 0)' onPress={()=>{this.callUser(`${rowData.userId}`)}}>
