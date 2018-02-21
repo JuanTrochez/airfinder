@@ -120,6 +120,21 @@ export default class TabOnlineFriend extends Component<{}> {
       this.onAnswer(data,false);
     }
   }
+
+  _redirectionCall(){
+    alert('Redirection page d appel');
+    // this.props.navigator.showModal({
+    //   screen: 'DIFM_App.Home.Call',
+    //   title: 'Appel',
+    //   passProps: {
+    //     userRole : this.state.userRole,
+    //     socketConnexion : this.socket,
+    //     roomID : this.state.userRoomId,
+    //     socketID: this.state.dataSocket.userSocketId,
+    //   },
+    // });
+  }
+
   //Quand un utilisateur nous appelle
   onAnswer(data, choice){
     if(this.busy == false){
