@@ -14,6 +14,7 @@ import {
 import { Navigation } from 'react-native-navigation';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
+const WIDTH_SCREEN = Dimensions.get('window').width;
 const HEIGHT_SCREEN = Dimensions.get('window').height;
 
 export default class Registration extends Component<{}> {
@@ -96,7 +97,7 @@ export default class Registration extends Component<{}> {
   }
 
   createUserProfil() {
-    fetch('http://172.16.14.105:3000/users/create', {
+    fetch('http://172.16.14.80:3000/users/create', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -159,7 +160,27 @@ export default class Registration extends Component<{}> {
         screen: 'screens.Home',
         title: 'Accueil',
         passProps: {objUser : userData},
-      }
+        topTabs: [{
+          screenId: 'screens.TabOnlineFriend',
+          title: 'En ligne',
+          passProps: {objUser : userData},
+        }, {
+          screenId: 'screens.TabOfflineFriend',
+          title: 'Hors Ligne',
+        }, {
+          screenId: 'screens.TabSearchFriend',
+          title: 'Recherche d amis',
+        }],
+      },
+      drawer: {
+        left: {
+          // optional, define if you want a drawer from the left
+          screen: 'screens.UserInfo', // unique ID registered with Navigation.registerScreen
+          passProps: {objUser : userData}, // simple serializable object that will pass as props to all top screens (optional)
+          disableOpenGesture: false, // can the drawer be opened with a swipe instead of button (optional, Android only)
+          fixedWidth: WIDTH_SCREEN *2.5 // a fixed width you want your left drawer to have (optional)
+        },
+      },
     });
   }
 

@@ -18,13 +18,12 @@ export default class SignInForm extends Component<{}> {
     if(this.state.userEmail == "" || this.state.userPassword == ""){
       alert("Remplir les champs email et connexion");
     } else {
-      //this.isUserAlreadyRegistred();
-      this.props.Parent.redirectionHome({});
+      this.isUserAlreadyRegistred();
     }
   }
-
+  //Json form : {name: "chancla", firstname: "Risitas", email: "lachancla@hotmail.fr", _id:"zedzef4589"}
   isUserAlreadyRegistred(){
-    fetch('http://172.16.14.105:3000/users/login', {
+    fetch('http://172.16.14.80:3000/users/login', {
       method: 'POST',
       headers: {
         Accept: 'application/json',

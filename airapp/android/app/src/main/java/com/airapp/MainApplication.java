@@ -13,6 +13,7 @@ import com.facebook.appevents.AppEventsLogger;
 import com.facebook.soloader.SoLoader;
 import com.reactnativenavigation.NavigationApplication;
 import com.reactnativenavigation.controllers.ActivityCallbacks;
+import com.oney.WebRTCModule.WebRTCModulePackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -34,7 +35,8 @@ public class MainApplication extends NavigationApplication {
        // Add additional packages you require here
        // No need to add RnnPackage and MainReactPackage
        return Arrays.<ReactPackage>asList(
-           new FBSDKPackage(mCallbackManager)
+           new FBSDKPackage(mCallbackManager),
+           new WebRTCModulePackage()
            // eg. new VectorIconsPackage()
        );
    }

@@ -1,9 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
-
 import React, { Component } from 'react';
 import {
   StyleSheet,
@@ -108,7 +102,7 @@ export default class Connection extends Component<{}> {
   };
 
   sendFBCreatePerson() {
-    fetch('http://172.16.14.105:3000/users/create', {
+    fetch('http://172.16.14.80:3000/users/create', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -145,7 +139,7 @@ export default class Connection extends Component<{}> {
   }
 
   sendFBConnection() {
-    fetch('http://172.16.14.105:3000/users/login', {
+    fetch('http://172.16.14.80:3000/users/login', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -211,7 +205,27 @@ export default class Connection extends Component<{}> {
         screen: 'screens.Home',
         title: 'Accueil',
         passProps: {objUser : userData},
-      }
+        topTabs: [{
+          screenId: 'screens.TabOnlineFriend',
+          title: 'En ligne',
+          passProps: {objUser : userData},
+        }, {
+          screenId: 'screens.TabOfflineFriend',
+          title: 'Hors Ligne',
+        }, {
+          screenId: 'screens.TabSearchFriend',
+          title: 'Recherche d amis',
+        }],
+      },
+      drawer: {
+        left: {
+          // optional, define if you want a drawer from the left
+          screen: 'screens.UserInfo', // unique ID registered with Navigation.registerScreen
+          passProps: {objUser : userData}, // simple serializable object that will pass as props to all top screens (optional)
+          disableOpenGesture: false, // can the drawer be opened with a swipe instead of button (optional, Android only)
+          fixedWidth: WIDTH_SCREEN *2.5 // a fixed width you want your left drawer to have (optional)
+        },
+      },
     });
   }
 
