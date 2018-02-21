@@ -1,6 +1,7 @@
 'use strict';
 
 import io from 'socket.io-client';
+import ServerConfig from '../../../config/server-config';
 
 //*********const
 
@@ -14,7 +15,7 @@ export default class Socket {
 
   constructor(tabOnlineFriendObject){
     tabOnlineFriend = tabOnlineFriendObject;
-    socketCo = io.connect('http://172.16.14.80:3000', {transports: ['websocket']}); //Guest
+    socketCo = io.connect(ServerConfig.url, {transports: ['websocket']}); //Guest
     this.onReceiveMessage(); //permet de se mettre sur ecoute des serveurs message
   }
 
