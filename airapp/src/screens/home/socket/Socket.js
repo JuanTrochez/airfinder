@@ -50,6 +50,8 @@ export default class Socket {
 
     socketCo.on('connect', function() {
       tabOnlineFriend.setState({userSocketId: socketCo.id});
+      tabOnlineFriend.socket.sendMessage('get id',{userId: tabOnlineFriend.state.userId});
+      console.log("Socket reset: "+ socketCo.id);
     });
 
     socketCo.on('roommessage', function(message){
