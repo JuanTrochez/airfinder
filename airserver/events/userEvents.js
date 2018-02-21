@@ -10,12 +10,32 @@ module.exports = function(io) {
     console.log('a user connected');
 
     socket.on('message', (data) => {
-      console.log('message received', data);
+      console.log('message received', data, connectedUsers.length);
+      connectedUsers.forEach(element => {
+        console.log(element.id + ' ' + data.receiver);
+        if (element.id === data.receiver) {
+          data.type = 'answer';
+          console.log('sending message', data);
+          element.socket.send(data);
+        }
+      }); 
     });
 
     socket.on('get id', (data) => {
       console.log('get id', data);
-      connectedUsers.push({id: data.userId, socketId: socket.id});
+      connectedUsers.push({id: data.userId, socket: socket});
+    });
+
+    socket.on('call accepted', (data) => {
+      console.log('call is accepted', data);
+      // connectedUsers.forEach(element => {
+      //   console.log(element.id + ' ' + data.receiver);
+      //   if (element.id === data.receiver) {
+      //     data.type = 'call_accepted';
+      //     console.log('sending message', data);
+      //     element.socket.send(data);
+      //   }
+      // });       
     });
 
     // On conversation entry, join broadcast channel
@@ -34,8 +54,8 @@ module.exports = function(io) {
       });
 
     socket.on('disconnect', () => {
-      //console.log('user disconnected');
-      connectedUsers = connectedUsers.filter(element => element.socketId != socket.id);
+      console.log('user disconnected');
+      connectedUsers = connectedUsers.filter(element => element.socket.id != socket.id);
       // console.log('user disconnected', connectedUsers);
     });
   });
