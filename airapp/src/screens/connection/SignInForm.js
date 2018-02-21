@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ServerConfig from '../../config/server-config';
 import { StyleSheet, View, TextInput, TouchableOpacity, Text} from 'react-native';
 
 
@@ -23,7 +24,7 @@ export default class SignInForm extends Component<{}> {
   }
   //Json form : {name: "chancla", firstname: "Risitas", email: "lachancla@hotmail.fr", _id:"zedzef4589"}
   isUserAlreadyRegistred(){
-    fetch('http://172.16.14.80:3000/users/login', {
+    fetch(ServerConfig.url + 'users/login', {
       method: 'POST',
       headers: {
         Accept: 'application/json',

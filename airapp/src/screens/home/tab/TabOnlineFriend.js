@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ServerConfig from '../../../config/server-config';
 import {
   Platform,
   StyleSheet,
@@ -57,7 +58,7 @@ export default class TabOnlineFriend extends Component<{}> {
   };
 
   fillListHistory(){
-    fetch('http://172.16.14.80:3000/users')
+    fetch(ServerConfig.url + 'users')
       .then((response) => response.json())
       .then((responseJson) => {
         if(responseJson.valid){
@@ -120,6 +121,21 @@ export default class TabOnlineFriend extends Component<{}> {
       this.onAnswer(data,false);
     }
   }
+
+  _redirectionCall(){
+    alert('Redirection page d appel');
+    // this.props.navigator.showModal({
+    //   screen: 'DIFM_App.Home.Call',
+    //   title: 'Appel',
+    //   passProps: {
+    //     userRole : this.state.userRole,
+    //     socketConnexion : this.socket,
+    //     roomID : this.state.userRoomId,
+    //     socketID: this.state.dataSocket.userSocketId,
+    //   },
+    // });
+  }
+
   //Quand un utilisateur nous appelle
   onAnswer(data, choice){
     if(this.busy == false){

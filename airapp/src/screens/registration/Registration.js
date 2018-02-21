@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ServerConfig from '../../config/server-config';
 import {
   StyleSheet,
   Text,
@@ -97,7 +98,7 @@ export default class Registration extends Component<{}> {
   }
 
   createUserProfil() {
-    fetch('http://172.16.14.80:3000/users/create', {
+    fetch(ServerConfig + 'users/create', {
       method: 'POST',
       headers: {
         Accept: 'application/json',

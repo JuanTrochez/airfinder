@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ServerConfig from '../../config/server-config';
 import {
   StyleSheet,
   Image,
@@ -102,7 +103,7 @@ export default class Connection extends Component<{}> {
   };
 
   sendFBCreatePerson() {
-    fetch('http://172.16.14.80:3000/users/create', {
+    fetch(ServerConfig.url + 'users/create', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -139,7 +140,7 @@ export default class Connection extends Component<{}> {
   }
 
   sendFBConnection() {
-    fetch('http://172.16.14.80:3000/users/login', {
+    fetch(ServerConfig.url + 'users/login', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
