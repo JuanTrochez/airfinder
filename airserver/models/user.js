@@ -37,7 +37,8 @@ var userSchema = new Schema({
 	createdAt: { type: Date, default: Date.now },
 	updatedAt: { type: Date, default: Date.now },
 	friends: [{ type: Schema.Types.ObjectId, ref: "Friend" }],
-	position: [{ type: Schema.Types.ObjectId, ref: "Position" }]
+	position: [{ type: Schema.Types.ObjectId, ref: "Position" }],
+	history: [{ type: Schema.Types.ObjectId, ref: "History" }],
 });
 
 userSchema.plugin(uniqueValidator, { message: 'La valeur est déjà utilisée' });

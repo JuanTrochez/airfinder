@@ -1,16 +1,10 @@
-let User = require('../models/user');
+import ErrorHelper from '../helpers/ErrorsHelper';
+import ErrorsMessage from '../config/errors';
 let UserService = require('../services/user');
-
-const ERROR_DEFAULT_MESSAGE = 'Une erreur est survenue lors de la requête';
-const ERROR_CODES = {
-	default: 'DISPLAY_MESSAGE',
-	errors: 'DISPLAY_ERRORS',
-	createFbAccount: 'CREATE_FB_ACCOUNT',
-};
 
 const defaultResponse = {
 	valid: false,
-	message: ERROR_DEFAULT_MESSAGE,
+	message: ErrorsMessage.defaultMessage,
 	errors: [],
 	data: []
 }
@@ -19,15 +13,15 @@ const defaultResponse = {
 exports.index = function(req, res) {
 	let response = defaultResponse;
 	UserService.findAll()
-		.then((data) => {
-			console.log('users finally founded');
-			response.valid = data.length > 0;
-			response.message = response.valid ? 'Des utilisateurs ont bien été trouvé' : 'Aucun utilisateur trouvé';
-			response.data = data;
-			res.json(response);
-		}).catch((errors) => {
-			console.error(errors);
-		});
+	.then(function (data) {
+		console.log('users finally founded');
+		response.valid = data.length > 0;
+		response.message = response.valid ? 'Des utilisateurs ont bien été trouvé' : 'Aucun utilisateur trouvé';
+		response.data = data;
+		res.json(response);
+	}).catch((errors) => {
+		console.error(errors);
+	});
 };
 
 // Display list of all users.
@@ -41,7 +35,11 @@ exports.user_list = function(req, res) {
 			response.data = data;
 			res.json(response);
 		}).catch((errors) => {
+			console.error("error while retrieving all users");
 			console.error(errors);
+			response.errors = ErrorHelper.getErrorsFromObject(data.errors);
+			response.code = ErrorsMessage.codes.displayErrors;
+			res.json(response);
 		});
 };
 
@@ -55,16 +53,17 @@ exports.user_create_post = function(req, res) {
 	let response = defaultResponse;
 	let user = req.body;
 	user.password = user.isFacebook ? 'testmdp' : user.password;
-	UserService.create(user).then((data) => {
+	UserService.create(user)
+	.then((data) => {
 		console.log('user created ', data);
 		response.valid = true;
 		response.data = data;
 		response.message = 'L\'utilisateur a bien été créé';
 		res.json(response);
-	}).catch((errors) => {
-		console.error(errors);
-		response.errors = errors;
-		response.code = ERROR_CODES.errors;
+	}).catch((data) => {
+		console.error("error while creating user");
+		response.errors = ErrorHelper.getErrorsFromObject(data.errors);
+		response.code = ErrorsMessage.codes.displayErrors;
 		res.json(response);
 	});
 };
@@ -84,7 +83,7 @@ const checkUserCredentials = function(user, authData) {
 		//on verifie son mdp
 		response.valid = (user.password === authData.password);
 		response.message = response.valid ? 'Good good' : 'Identifiant/Mot de passe incorrect';
-		response.code = ERROR_CODES.default;
+		response.code = ErrorsMessage.codes.default;
 		return response;
 	}
 	//user log via fb and the user retrieved isn't facebook connected
@@ -108,23 +107,25 @@ exports.user_login_post = function(req, res) {
 	let user = {
 		email: req.body.email
 	}
-	UserService.findByCriterias(user)
+	UserService.findOneByCriterias(user)
 	.then((data) => {
 		user = req.body;
-		if (data.length > 0) {
-			response = checkUserCredentials(data[0], user);
+		console.log('request data', user);
+		console.log('user data', data);
+		if (data) {
+			response = checkUserCredentials(data, user);
 		} else {
 			response.valid = false;
 			response.message = 'Vous n\'êtes pas encore inscrit';
-			response.code = user.isFacebook ? ERROR_CODES.createFbAccount : ERROR_CODES.default;
+			response.code = user.isFacebook ? ErrorsMessage.codes.createFbAccount : ErrorsMessage.codes.default;
 			console.log("code de reponse : ",user.isFacebook,response.code);
 		}
-		response.data = data[0];
+		response.data = data;
 		res.json(response);
 	})
 	.catch((errors) => {
 		// console.log(errors);
-		response.errors = errors;
+		response.errors = ErrorHelper.getErrorsFromObject(data.errors);
 		response.code = ERROR_CODES.errors;
 		res.json(response);
 	});
@@ -139,3 +140,49 @@ exports.user_delete_post = function(req, res) {
 exports.user_update_post = function(req, res) {
 	res.send('NOT IMPLEMENTED: user update POST');
 };
+
+exports.update_user = function(user) {
+	UserService.update(user).then((data) => {
+		console.log('update successfull', data);
+	})
+	.catch((errors) => {
+		// console.log(errors);
+		response.errors = ErrorHelper.getErrorsFromObject(data.errors);
+		response.code = ERROR_CODES.errors;
+		res.json(response);
+	});
+}
+
+
+//Handle user request for contacting another
+exports.user_contact_get = function(req, res) {
+	res.send('NOT IMPLEMENTED: user contact get');
+};
+
+
+exports.user_search = function(req, res) {
+	let response = defaultResponse;
+	let searchString = new RegExp(req.body.search, 'i');
+	let criterias = { $or:[{'email': searchString}, {'name':searchString}, {'firstname':searchString} ]};
+	UserService.findByCriterias(criterias)
+	.then((datas) => {
+		console.log('search request datas', datas);
+		if (datas.length >0) {
+			console.log('found users');
+			response.valid = true;
+			response.message = 'found users';
+		} else {
+			response.valid = false;
+			response.message = 'Aucun utilisateur trouvé';
+			response.code = ErrorsMessage.codes.default;
+		}
+		response.data = datas;
+		res.json(response);
+	})
+	.catch((errors) => {
+		// console.log(errors);
+		response.errors = ErrorHelper.getErrorsFromObject(data.errors);
+		response.code = ERROR_CODES.errors;
+		res.json(response);
+	});
+}

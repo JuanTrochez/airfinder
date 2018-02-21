@@ -20,4 +20,13 @@ router.post('/login', function(req, res, next) {
 	userController.user_login_post(req, res);
 });
 
+router.get('/contact/:userId', function(req, res, next) {
+	userController.user_contact_get(req,res);
+});
+
+router.post('/search', function(req, res, next) {
+	userController.user_search(req, res);
+});
+
+
 module.exports = router;
