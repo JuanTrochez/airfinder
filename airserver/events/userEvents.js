@@ -1,3 +1,6 @@
+import usersController from '../controllers/usersController';
+
+let connectedUsers = [];
 
 //user socket events
 module.exports = function(io) {
@@ -5,6 +8,15 @@ module.exports = function(io) {
   // Set socket.io listeners.
   io.on('connection', (socket) => {
     console.log('a user connected');
+
+    socket.on('message', (data) => {
+      console.log('message received', data);
+    });
+
+    socket.on('get id', (data) => {
+      console.log('get id', data);
+      connectedUsers.push({id: data.userId, socketId: socket.id});
+    });
 
     // On conversation entry, join broadcast channel
     socket.on('enter conversation', (conversation) => {
@@ -23,6 +35,8 @@ module.exports = function(io) {
 
     socket.on('disconnect', () => {
       //console.log('user disconnected');
+      connectedUsers = connectedUsers.filter(element => element.socketId != socket.id);
+      // console.log('user disconnected', connectedUsers);
     });
   });
 }

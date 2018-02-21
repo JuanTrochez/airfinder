@@ -35,7 +35,11 @@ exports.user_list = function(req, res) {
 			response.data = data;
 			res.json(response);
 		}).catch((errors) => {
+			console.error("error while retrieving all users");
 			console.error(errors);
+			response.errors = ErrorHelper.getErrorsFromObject(data.errors);
+			response.code = ErrorsMessage.codes.displayErrors;
+			res.json(response);
 		});
 };
 
@@ -136,6 +140,18 @@ exports.user_delete_post = function(req, res) {
 exports.user_update_post = function(req, res) {
 	res.send('NOT IMPLEMENTED: user update POST');
 };
+
+exports.update_user = function(user) {
+	UserService.update(user).then((data) => {
+		console.log('update successfull', data);
+	})
+	.catch((errors) => {
+		// console.log(errors);
+		response.errors = ErrorHelper.getErrorsFromObject(data.errors);
+		response.code = ERROR_CODES.errors;
+		res.json(response);
+	});
+}
 
 
 //Handle user request for contacting another

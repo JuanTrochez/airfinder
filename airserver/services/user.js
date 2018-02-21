@@ -46,3 +46,14 @@ exports.create = function(newUser) {
 	let userModel = new User(newUser);
 	return userModel.save();
 };
+
+
+//update user by id
+exports.update = function (user) {
+	// Model.findOne({ name: 'bourne' }, function (err, doc){
+	// 	doc.name = 'jason bourne';
+	// 	doc.visits.$inc();
+	// 	doc.save();
+	//   });
+	return userModel.update({ _id: user.id }, { $set: { socketId: user }});
+};

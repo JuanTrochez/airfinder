@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www",
+    "init-db": "./init-db.sh",
+    "start": "babel-node ./bin/www --exec babel-node --presets es2015,stage-2",
     "server": "DEBUG=express:* nodemon ./bin/www --exec babel-node --presets es2015,stage-2"
   },
   "dependencies": {
