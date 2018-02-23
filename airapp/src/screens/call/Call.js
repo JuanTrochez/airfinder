@@ -20,6 +20,11 @@ import {
 const pcPeers = {};
 const configuration = {"iceServers": [{"url": "stun:stun.l.google.com:19302"}]};
 
+let localStream;
+let container;
+
+var socket;
+
 export default class Call extends Component<{}> {
 
   constructor(props) {
@@ -88,6 +93,7 @@ export default class Call extends Component<{}> {
     console.log("Envoie de message" + Object.keys(pcPeers).length);
     for (const key in pcPeers) {
       const pc = pcPeers[key];
+      console.log('envoie de message à ', pc);
       pc.textDataChannel.send(message);
     }
    }
@@ -98,10 +104,13 @@ export default class Call extends Component<{}> {
   }
 
   timerTask() {
-
+    // setInterval(() => {
+    //   this.sendMessage('lolilol');
+    // }, 1000);
   }
 
   render() {
+    this.timerTask.bind(this);
     return (
       <View style={styles.container}>
         <View style={styles.compassHolder}>
@@ -221,7 +230,7 @@ function createPC(socketId, isOffer) {
     dataChannel.onmessage = function (event) {
       //console.log("dataChannel.onmessage reload:", event.data);
       //TODO faire les calculs avec les coordonnees de l'interllocuteur
-      let coordinates = JSON.parse(event.data);
+      //let coordinates = JSON.parse(event.data);
       console.log('Reception message: ' + coordinates);
     };
 
@@ -278,10 +287,6 @@ function exchange(data) {
 }
 
 function leave(socketId) {
-  console.log('leave', socketId);
-  console.log("taille pcPeers: " + Object.keys(pcPeers).length);
-  console.log("pc peeers : " + pcPeers[socketId]);
-
   for(const key in pcPeers){
     const pc = pcPeers[key];
     const viewIndex = pc.viewIndex;
