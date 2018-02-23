@@ -53,7 +53,8 @@ export default class TabOnlineFriend extends Component<{}> {
       userRoomId: 'room'+this.props.objUser._id,
       userId: this.props.objUser._id,
       userRole: "neutre",
-    })
+    });
+    this.busy = false;
   };
 
   fillListHistory(){
