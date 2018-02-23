@@ -67,7 +67,7 @@ export default class Call extends Component<{}> {
 
   callLeave(socketID){
     leave(socketID);
-    this._redirectionAccueil();
+    this._redirectionHome();
   }
 
   callJoin(socketIds){
@@ -75,6 +75,12 @@ export default class Call extends Component<{}> {
       const socketId = socketIds[i];
       createPC(socketId, true);
     }
+  }
+
+  _redirectionHome(){
+    this.props.navigator.dismissModal({
+      animationType: 'slide-down' // 'none' / 'slide-down' , dismiss animation for the modal (optional, default 'slide-down')
+    });
   }
 
   //send our coordinates to our friend
@@ -89,7 +95,10 @@ export default class Call extends Component<{}> {
   hangUp(){
     alert('Appel terminé');
     socket.sendMessage('message', {type: 'hangUp'});
-    //this.props.tabOnlineFriend.resetState();
+  }
+
+  timerTask() {
+
   }
 
   render() {
@@ -213,7 +222,7 @@ function createPC(socketId, isOffer) {
       //console.log("dataChannel.onmessage reload:", event.data);
       //TODO faire les calculs avec les coordonnees de l'interllocuteur
       let coordinates = JSON.parse(event.data);
-
+      console.log('Reception message: ' + coordinates);
     };
 
     dataChannel.onopen = function () {

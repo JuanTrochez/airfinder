@@ -38,6 +38,7 @@ export default class Socket {
   onReceiveMessage(){
     socketCo.on('message', function(message){
       var data = message;
+      console.log("retour onMessage: " , data);
       switch(data.type) {
            case "login":
 
@@ -80,6 +81,7 @@ export default class Socket {
 
     socketCo.on('leave', function(socketId){
       call.callLeave(socketId);
+      tabOnlineFriend.resetState();
     }.bind(this));
   }
 }
