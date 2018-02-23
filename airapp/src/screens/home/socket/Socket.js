@@ -10,6 +10,7 @@ const socketCo = null;
 
 
 var tabOnlineFriend = null;
+var call = null;
 
 export default class Socket {
 
@@ -17,6 +18,10 @@ export default class Socket {
     tabOnlineFriend = tabOnlineFriendObject;
     socketCo = io.connect(ServerConfig.url, {transports: ['websocket']}); //Guest
     this.onReceiveMessage(); //permet de se mettre sur ecoute des serveurs message
+  }
+
+  set_call(callObject) {
+    call = callObject;
   }
 
   sendMessage(eventSocket,obj){
@@ -51,7 +56,6 @@ export default class Socket {
     socketCo.on('connect', function() {
       tabOnlineFriend.setState({userSocketId: socketCo.id});
       tabOnlineFriend.socket.sendMessage('get id',{userId: tabOnlineFriend.state.userId});
-      console.log("Socket reset: "+ socketCo.id);
     });
 
     socketCo.on('roommessage', function(message){
@@ -71,11 +75,11 @@ export default class Socket {
 
     socketCo.on('exchange', function(data){
       //start exchange webRTC
-      //call.callExchange(data);
+      call.callExchange(data);
     }.bind(this));
 
     socketCo.on('leave', function(socketId){
-      //call.callLeave(socketId);
+      call.callLeave(socketId);
     }.bind(this));
   }
 }

@@ -209,7 +209,7 @@ export default class Connection extends Component<{}> {
         topTabs: [{
           screenId: 'screens.TabOnlineFriend',
           title: 'En ligne',
-          passProps: {objUser : userData},
+          passProps: {objUser : userData, navigatorParent: this.props.navigator},
         }, {
           screenId: 'screens.TabOfflineFriend',
           title: 'Hors Ligne',

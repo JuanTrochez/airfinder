@@ -9,6 +9,8 @@ import TabOnlineFriendScreen from './home/tab/TabOnlineFriend';
 import TabOfflineFriendScreen from './home/tab/TabOfflineFriend';
 import TabSearchFriendScreen from './home/tab/TabSearchFriend';
 
+import CallScreen from './call/Call';
+
 // register all screens of the app (including internal ones)
 export function registerScreens() {
   Navigation.registerComponent('screens.Connection', () => ConnectionScreen);
@@ -20,6 +22,8 @@ export function registerScreens() {
   Navigation.registerComponent('screens.TabOnlineFriend', () => TabOnlineFriendScreen);
   Navigation.registerComponent('screens.TabOfflineFriend', () => TabOfflineFriendScreen);
   Navigation.registerComponent('screens.TabSearchFriend', () => TabSearchFriendScreen);
+
+  Navigation.registerComponent('screens.Call', () => CallScreen);
 
 
 }

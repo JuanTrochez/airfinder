@@ -22,6 +22,19 @@ export default class SignInForm extends Component<{}> {
       this.isUserAlreadyRegistred();
     }
   }
+
+  // callView(){
+  //   this.props.navigatorParent.showModal({
+  //     screen: 'screens.Call',
+  //     passProps: {
+  //       userRole : this.state.userRole,
+  //       socketConnexion : this.socket,
+  //       roomID : this.state.userRoomId,
+  //       socketID: this.state.dataSocket.userSocketId,
+  //     }
+  //   });
+  // }
+
   //Json form : {name: "chancla", firstname: "Risitas", email: "lachancla@hotmail.fr", _id:"zedzef4589"}
   isUserAlreadyRegistred(){
     fetch(ServerConfig.url + 'users/login', {
