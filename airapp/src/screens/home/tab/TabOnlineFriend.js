@@ -144,8 +144,9 @@ export default class TabOnlineFriend extends Component<{}> {
         // code
         this.setState({userRole: "appele"});
         this.setState({userRoomId: data.callerRoomId});
-        this.socket.sendMessage('call accepted',{
-          type: "call_accepted",
+        this.socket.sendMessage('call answer',{
+          type: "call_response",
+          response: "accepted",
           callername: data.callername,
           callerId: data.callerId,
           from: this.state.username
@@ -153,8 +154,9 @@ export default class TabOnlineFriend extends Component<{}> {
         this._redirectionCall();
       }else{
         console.log("call rejected");
-        this.socket.sendMessage('message',{
-          type: "call_rejected",
+        this.socket.sendMessage('call answer',{
+          type: "call_response",
+          response: "rejected",
           callername: data.callername,
           callerId: data.callerId,
           from: this.state.username
@@ -163,8 +165,9 @@ export default class TabOnlineFriend extends Component<{}> {
         incallwith = "";
       }
     }else{
-      this.socket.sendMessage('message',{
-        type: "call_busy",
+      this.socket.sendMessage('call answer',{
+        type: "call_response",
+        response: "busy",
         callername: data.callername,
         callerId: data.callerId,
         from: this.state.username
