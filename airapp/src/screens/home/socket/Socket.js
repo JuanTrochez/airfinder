@@ -77,8 +77,6 @@ export default class Socket {
 
     socketCo.on('roommessage', function(message){
         var data = message;
-        console.log("Person connect id: " + data.personId);
-        console.log("Person data type: " + data.type);
         switch(data.type) {
              case "login":
                     tabOnlineFriend.searchPerson(data.personId, "add");

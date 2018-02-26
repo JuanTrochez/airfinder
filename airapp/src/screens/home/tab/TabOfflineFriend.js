@@ -107,7 +107,6 @@ export default class TabOfflineFriend extends Component<{}> {
             alert(messageError);
             break;
           default:
-            alert(responseJson.message);
         }
       }
     })
@@ -144,12 +143,6 @@ export default class TabOfflineFriend extends Component<{}> {
                 {`${rowData.useremail}`}
               </Text>
             </View>
-            <TouchableHighlight underlayColor='rgba(255, 255, 255, 0)' onPress={()=>{this.callUser(`${rowData.userId}`)}}>
-              <Image
-                source={require('../../../img/Localiser.png')}
-                style={styles.call}
-              />
-            </TouchableHighlight>
           </View>
         );
       }

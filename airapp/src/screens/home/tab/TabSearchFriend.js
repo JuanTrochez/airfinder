@@ -45,6 +45,7 @@ export default class TabSearchFriend extends Component<{}> {
         userId: dataNewUser._id,
         userfirstname: dataNewUser.firstname,
         useremail: dataNewUser.email,
+        isOnline : dataNewUser.isOnline,
       });
     }else if(action == "remove"){
       this.listUserConnect = this.listUserConnect.filter(obj => obj.userId !== dataNewUser.userId);
@@ -94,6 +95,17 @@ export default class TabSearchFriend extends Component<{}> {
     });
   }
 
+  callUser(userToCallId){
+    let obj = {
+      type: "call_user",
+      receiver: userToCallId,
+      callername: this.state.userName,
+      callerId: this.state.userId,
+      callerRoomId: this.state.userRoomId,
+    };
+    this.socket.sendMessage('message',obj);
+  }
+
   renderRow(rowData){
         return (
           <View style={styles.containerRow}>
@@ -103,15 +115,17 @@ export default class TabSearchFriend extends Component<{}> {
                 {`${rowData.username}`}
               </Text>
               <Text style={styles.textStatus}>
-                {`${rowData.useremail}`}
+                {`${rowData.email}`}
               </Text>
             </View>
-            <TouchableHighlight underlayColor='rgba(255, 255, 255, 0)' onPress={()=>{this.callUser(`${rowData.userId}`)}}>
-              <Image
-                source={require('../../../img/Localiser.png')}
-                style={styles.call}
-              />
-            </TouchableHighlight>
+            {`${rowData.isOnline}` === true &&
+              <TouchableHighlight underlayColor='rgba(255, 255, 255, 0)' onPress={()=>{this.callUser(`${rowData.userId}`)}}>
+                <Image
+                  source={require('../../../img/Localiser.png')}
+                  style={styles.call}
+                />
+              </TouchableHighlight>
+            }
           </View>
         );
       }

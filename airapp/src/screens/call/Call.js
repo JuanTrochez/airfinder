@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Socket from '../home/socket/Socket';
 import {
   Platform,
   StyleSheet,
@@ -45,7 +46,7 @@ export default class Call extends Component<{}> {
 
     //Recupere la socket passee en parametre
     socket = this.props.socketConnexion;
-    socket.set_call(this);
+    Socket.set_call(this);
     this.userRole = this.props.userRole;
 
     //Hide the top navbar
@@ -63,7 +64,6 @@ export default class Call extends Component<{}> {
       container.setState({selfViewSrc: stream.toURL()});
       container.setState({status: 'ready'});
       joinRoom(container.state.roomID);
-      this.timerTask(this);
     }.bind(this));
   }
 
@@ -98,7 +98,6 @@ export default class Call extends Component<{}> {
       console.log("Valeur de dataChannel: " , pc.textDataChannel);
       if(pc.textDataChannel === undefined){
         console.log("create data channel");
-        createDataChannel();
       }
       pc.textDataChannel.send(message);
     }
@@ -107,15 +106,6 @@ export default class Call extends Component<{}> {
   hangUp(){
     alert('Appel terminé');
     socket.sendMessage('message', {type: 'hangUp'});
-  }
-
-  timerTask(objectCall) {
-    console.log("timed");
-    setInterval(() => {
-      console.log("interval");
-      objectCall.sendMessage(JSON.stringify({value:'lolilol'}));
-      objectCall.sendMessage({value:'lolilol'});
-    }, 1000);
   }
 
   render() {
