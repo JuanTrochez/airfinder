@@ -55,5 +55,5 @@ exports.update = function (user) {
 	// 	doc.visits.$inc();
 	// 	doc.save();
 	//   });
-	return userModel.update({ _id: user.id }, { $set: { socketId: user }});
+	return User.update({ _id: user.id }, { $set: user});
 };

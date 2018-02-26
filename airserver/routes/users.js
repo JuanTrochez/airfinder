@@ -28,5 +28,9 @@ router.post('/search', function(req, res, next) {
 	userController.user_search(req, res);
 });
 
+router.post('/search/custom', function(req, res, next) {
+	userController.user_search_by_criteria(req, res);
+});
+
 
 module.exports = router;

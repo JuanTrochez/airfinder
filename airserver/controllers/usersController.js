@@ -124,7 +124,7 @@ exports.user_login_post = function(req, res) {
 		res.json(response);
 	})
 	.catch((errors) => {
-		// console.log(errors);
+		console.log(errors);
 		response.errors = ErrorHelper.getErrorsFromObject(data.errors);
 		response.code = ERROR_CODES.errors;
 		res.json(response);
@@ -143,7 +143,7 @@ exports.user_update_post = function(req, res) {
 
 exports.update_user = function(user) {
 	UserService.update(user).then((data) => {
-		console.log('update successfull', data);
+		console.log('update successfull');
 	})
 	.catch((errors) => {
 		// console.log(errors);
@@ -182,7 +182,36 @@ exports.user_search = function(req, res) {
 	.catch((errors) => {
 		// console.log(errors);
 		response.errors = ErrorHelper.getErrorsFromObject(data.errors);
-		response.code = ERROR_CODES.errors;
+		response.code = ErrorsMessage.codes.errors;
+		res.json(response);
+	});
+}
+
+
+exports.user_search_by_criteria = function(req, res) {
+	let response = defaultResponse;
+	let criterias = req.body;
+	console.log('search criteria custom', criterias);
+	UserService.findByCriterias(criterias)
+	.then((datas) => {
+		// console.log('search request datas', datas);
+		if (datas.length >0) {
+			console.log('found users');
+			response.valid = true;
+			response.message = 'found users';
+		} else {
+			response.valid = false;
+			response.message = 'Aucun utilisateur trouvé';
+			response.code = ErrorsMessage.codes.default;
+		}
+		response.data = datas;
+		console.log('custom response', response);
+		res.json(response);
+	})
+	.catch((errors) => {
+		// console.log(errors);
+		response.errors = ErrorHelper.getErrorsFromObject(data.errors);
+		response.code = ErrorsMessage.codes.errors;
 		res.json(response);
 	});
 }
