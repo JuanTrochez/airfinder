@@ -98,7 +98,7 @@ export default class Registration extends Component<{}> {
   }
 
   createUserProfil() {
-    fetch(ServerConfig + 'users/create', {
+    fetch(ServerConfig.url + 'users/create', {
       method: 'POST',
       headers: {
         Accept: 'application/json',

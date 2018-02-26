@@ -10,18 +10,34 @@ const socketCo = null;
 
 
 var tabOnlineFriend = null;
+var tabOfflineFriend = null;
 var call = null;
 
 export default class Socket {
 
-  constructor(tabOnlineFriendObject){
-    tabOnlineFriend = tabOnlineFriendObject;
-    socketCo = io.connect(ServerConfig.url, {transports: ['websocket']}); //Guest
-    this.onReceiveMessage(); //permet de se mettre sur ecoute des serveurs message
+  constructor(){
+    this.get_Socket();
   }
 
-  set_call(callObject) {
+  static set_OnlineFriend(OnLineFriendObject) {
+    tabOnlineFriend = OnLineFriendObject;
+  }
+
+  static set_OfflineFriend(OffLineFriendObject) {
+    tabOfflineFriend = OffLineFriendObject;
+  }
+
+  static set_call(callObject) {
     call = callObject;
+  }
+
+  get_Socket() {
+    if(socketCo === null){
+      console.log("Person init socket");
+      socketCo = io.connect(ServerConfig.url, {transports: ['websocket']}); //Guest
+      this.onReceiveMessage(); //permet de se mettre sur ecoute des serveurs message
+    }
+    return socketCo
   }
 
   sendMessage(eventSocket,obj){
@@ -61,13 +77,16 @@ export default class Socket {
 
     socketCo.on('roommessage', function(message){
         var data = message;
-
+        console.log("Person connect id: " + data.personId);
+        console.log("Person data type: " + data.type);
         switch(data.type) {
              case "login":
-
+                    tabOnlineFriend.searchPerson(data.personId, "add");
+                    tabOfflineFriend.searchPerson(data.personId, "remove");
                     break;
              case "disconnect":
-
+                     tabOnlineFriend.searchPerson(data.personId, "remove");
+                     tabOfflineFriend.searchPerson(data.personId, "add");
                      break;
             default:
                     break;

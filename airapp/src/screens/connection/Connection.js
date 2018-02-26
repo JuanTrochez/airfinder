@@ -213,9 +213,11 @@ export default class Connection extends Component<{}> {
         }, {
           screenId: 'screens.TabOfflineFriend',
           title: 'Hors Ligne',
+          passProps: {objUser : userData, navigatorParent: this.props.navigator},
         }, {
           screenId: 'screens.TabSearchFriend',
           title: 'Recherche d amis',
+          passProps: {objUser : userData, navigatorParent: this.props.navigator},
         }],
       },
       drawer: {
@@ -237,7 +239,7 @@ export default class Connection extends Component<{}> {
         <View style={styles.logoContainer}>
           <Image
             style={styles.logo}
-            source={require('../../img/KdoubleRotor.png')}
+            source={require('../../img/sloth.png')}
           />
           <Text style={styles.welcome}> Bienvenue sur Air Finder !</Text>
           <Text style={styles.infoMsg}> Connectez-vous ou inscrivez-vous pour commencer</Text>

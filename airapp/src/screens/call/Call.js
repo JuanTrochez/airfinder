@@ -63,6 +63,7 @@ export default class Call extends Component<{}> {
       container.setState({selfViewSrc: stream.toURL()});
       container.setState({status: 'ready'});
       joinRoom(container.state.roomID);
+      this.timerTask(this);
     }.bind(this));
   }
 
@@ -94,6 +95,11 @@ export default class Call extends Component<{}> {
     for (const key in pcPeers) {
       const pc = pcPeers[key];
       console.log('envoie de message à ', pc);
+      console.log("Valeur de dataChannel: " , pc.textDataChannel);
+      if(pc.textDataChannel === undefined){
+        console.log("create data channel");
+        createDataChannel();
+      }
       pc.textDataChannel.send(message);
     }
    }
@@ -103,14 +109,16 @@ export default class Call extends Component<{}> {
     socket.sendMessage('message', {type: 'hangUp'});
   }
 
-  timerTask() {
-    // setInterval(() => {
-    //   this.sendMessage('lolilol');
-    // }, 1000);
+  timerTask(objectCall) {
+    console.log("timed");
+    setInterval(() => {
+      console.log("interval");
+      objectCall.sendMessage(JSON.stringify({value:'lolilol'}));
+      objectCall.sendMessage({value:'lolilol'});
+    }, 1000);
   }
 
   render() {
-    this.timerTask.bind(this);
     return (
       <View style={styles.container}>
         <View style={styles.compassHolder}>
@@ -162,6 +170,8 @@ function joinRoom(roomID) {
 
 function createPC(socketId, isOffer) {
   const pc = new RTCPeerConnection(configuration);
+  console.log("SockedId: " + socketId);
+  console.log("Valeur de pc: ", pc);
   pcPeers[socketId] = pc;
   pc.onicecandidate = function (event) {
     console.log("log 1 onicecandidate");
@@ -230,7 +240,7 @@ function createPC(socketId, isOffer) {
     dataChannel.onmessage = function (event) {
       //console.log("dataChannel.onmessage reload:", event.data);
       //TODO faire les calculs avec les coordonnees de l'interllocuteur
-      //let coordinates = JSON.parse(event.data);
+      let coordinates = JSON.parse(event.data);
       console.log('Reception message: ' + coordinates);
     };
 
@@ -244,6 +254,7 @@ function createPC(socketId, isOffer) {
     };
 
     pc.textDataChannel = dataChannel;
+    console.log("textDataChannel created: ", pc.textDataChannel);
   }
   return pc;
 }

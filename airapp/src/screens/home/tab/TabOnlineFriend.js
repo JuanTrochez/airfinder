@@ -33,7 +33,8 @@ export default class TabOnlineFriend extends Component<{}> {
     };
     this.busy = false;
     this.listUserConnect = [];
-    this.socket = new Socket(this);
+    Socket.set_OnlineFriend(this);
+    this.socket = new Socket();
   }
 
   static navigatorStyle = {
@@ -57,13 +58,24 @@ export default class TabOnlineFriend extends Component<{}> {
     this.busy = false;
   };
 
-  fillListHistory(){
-    fetch(ServerConfig.url + 'users')
+  searchPerson(id, action) {
+    if(id !== this.state.userId){
+      fetch(ServerConfig.url + 'users/search/custom', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          _id: id,
+        }),
+      })
       .then((response) => response.json())
       .then((responseJson) => {
         if(responseJson.valid){
           responseJson.data.forEach(element => {
-            this.updateListView(element,"add")
+            console.log("On passe ici add : " + element);
+            this.updateListView(element, action);
           });
         } else {
           switch(responseJson.code) {
@@ -75,10 +87,54 @@ export default class TabOnlineFriend extends Component<{}> {
               alert(messageError);
               break;
             default:
-              alert("Une erreur est survenue");
+              alert(responseJson.message);
           }
         }
+      })
+      .catch((error) => {
+        console.log("Error for the createUserProfil request "+ error);
       });
+    }
+  }
+
+  fillListHistory(){
+    fetch(ServerConfig.url + 'users/search/custom', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        isOnline: true,
+        _id: {$ne: this.props.objUser._id},
+      }),
+    })
+    .then((response) => response.json())
+    .then((responseJson) => {
+      if(responseJson.valid){
+        this.listUserConnect = [];
+        this.setState({
+            dataSource: this.state.dataSource.cloneWithRows(this.listUserConnect),
+        });
+        responseJson.data.forEach(element => {
+          this.updateListView(element, "add");
+        });
+      } else {
+        switch(responseJson.code) {
+          case "DISPLAY_ERRORS":
+            let messageError = "";
+            responseJson.errors.forEach((element) => {
+              messageError += element.field + ":" + element.message + "\t";
+            });
+            alert(messageError);
+            break;
+          default:
+        }
+      }
+    })
+    .catch((error) => {
+      console.log("Error for the createUserProfil request "+ error);
+    });
   }
 
   updateListView(dataNewUser, action){
@@ -217,7 +273,7 @@ export default class TabOnlineFriend extends Component<{}> {
             </View>
             <TouchableHighlight underlayColor='rgba(255, 255, 255, 0)' onPress={()=>{this.callUser(`${rowData.userId}`)}}>
               <Image
-                source={require('../../../img/call.png')}
+                source={require('../../../img/Localiser.png')}
                 style={styles.call}
               />
             </TouchableHighlight>
