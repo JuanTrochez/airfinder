@@ -58,13 +58,13 @@ export default class Call extends Component<{}> {
 
   componentDidMount(){
     //user get the call, we take the stream
-    container = this;
-    getLocalStream(false, function(stream) {
-      localStream = stream;
-      container.setState({selfViewSrc: stream.toURL()});
-      container.setState({status: 'ready'});
-      joinRoom(container.state.roomID);
-    }.bind(this));
+    // container = this;
+    // getLocalStream(false, function(stream) {
+    //   localStream = stream;
+    //   container.setState({selfViewSrc: stream.toURL()});
+    //   container.setState({status: 'ready'});
+    //   joinRoom(container.state.roomID);
+    // }.bind(this));
   }
 
   callExchange(data){
@@ -104,8 +104,8 @@ export default class Call extends Component<{}> {
    }
 
   hangUp(){
-    alert('Appel terminé');
     socket.sendMessage('message', {type: 'hangUp'});
+    this._redirectionHome();
   }
 
   render() {

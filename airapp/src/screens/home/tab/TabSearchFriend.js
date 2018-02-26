@@ -115,7 +115,7 @@ export default class TabSearchFriend extends Component<{}> {
                 {`${rowData.username}`}
               </Text>
               <Text style={styles.textStatus}>
-                {`${rowData.email}`}
+                {`${rowData.useremail}`}
               </Text>
             </View>
             {`${rowData.isOnline}` === true &&
